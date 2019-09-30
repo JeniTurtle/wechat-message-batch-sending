@@ -1,0 +1,205 @@
+interface BaseGraphQLObject {
+  id: ID!
+  createdAt: DateTime!
+  createdById: String!
+  updatedAt: DateTime
+  updatedById: String
+  deletedAt: DateTime
+  deletedById: String
+  version: Int!
+}
+
+type BaseModel implements BaseGraphQLObject {
+  id: ID!
+  createdAt: DateTime!
+  createdById: String!
+  updatedAt: DateTime
+  updatedById: String
+  deletedAt: DateTime
+  deletedById: String
+  version: Int!
+}
+
+type BaseModelUUID implements BaseGraphQLObject {
+  id: ID!
+  createdAt: DateTime!
+  createdById: String!
+  updatedAt: DateTime
+  updatedById: String
+  deletedAt: DateTime
+  deletedById: String
+  version: Int!
+}
+
+input BaseWhereInput {
+  id_eq: String
+  id_in: [String!]
+  createdAt_eq: String
+  createdAt_lt: String
+  createdAt_lte: String
+  createdAt_gt: String
+  createdAt_gte: String
+  createdById_eq: String
+  updatedAt_eq: String
+  updatedAt_lt: String
+  updatedAt_lte: String
+  updatedAt_gt: String
+  updatedAt_gte: String
+  updatedById_eq: String
+  deletedAt_all: Boolean
+  deletedAt_eq: String
+  deletedAt_lt: String
+  deletedAt_lte: String
+  deletedAt_gt: String
+  deletedAt_gte: String
+  deletedById_eq: String
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+interface DeleteResponse {
+  id: ID!
+}
+
+type Query {
+  menus: WxAccount!
+}
+
+type StandardDeleteResponse {
+  id: ID!
+}
+
+type WxAccount implements BaseGraphQLObject {
+  id: ID!
+  createdAt: DateTime!
+  createdById: String!
+  updatedAt: DateTime
+  updatedById: String
+  deletedAt: DateTime
+  deletedById: String
+  version: Int!
+
+  """账户名称"""
+  accountName: String!
+
+  """微信AppId"""
+  appId: String!
+
+  """微信AppSecret"""
+  appSecret: String!
+
+  """下发的身份标识"""
+  identityId: String!
+
+  """消息回调地址"""
+  messageTokenUrl: String!
+}
+
+type WxMessageTask implements BaseGraphQLObject {
+  id: ID!
+  createdAt: DateTime!
+  createdById: String!
+  updatedAt: DateTime
+  updatedById: String
+  deletedAt: DateTime
+  deletedById: String
+  version: Int!
+
+  """批处理数量"""
+  batchCount: Int!
+
+  """执行的相关参数，json字符串"""
+  params: String!
+
+  """执行者"""
+  executor: WxAccount
+
+  """执行者"""
+  executorId: String!
+
+  """任务类型，1模板消息，0其他"""
+  type: WxMsgTaskType
+
+  """是否延迟执行，1是，0否"""
+  isDelay: WxMsgIsDelay
+
+  """计划执行时间"""
+  planTime: DateTime
+
+  """任务进度，0开始执行；1执行完成"""
+  progress: WxMsgTaskProgress
+}
+
+enum WxMsgIsDelay {
+  YES
+  NO
+}
+
+enum WxMsgTaskProgress {
+  READY
+  COMPLETE
+}
+
+enum WxMsgTaskType {
+  DEFAULT
+  TEMPLATE
+}
+
+type WxTemplateMessage implements BaseGraphQLObject {
+  id: ID!
+  createdAt: DateTime!
+  createdById: String!
+  updatedAt: DateTime
+  updatedById: String
+  deletedAt: DateTime
+  deletedById: String
+  version: Int!
+
+  """微信用户openid"""
+  openid: String!
+
+  """微信模板消息ID"""
+  templateId: String!
+
+  """消息跳转web地址"""
+  url: String
+
+  """模板内容字体颜色"""
+  color: String
+
+  """跳转的微信小程序appId"""
+  miniprogramAppId: String
+
+  """跳转的微信小程序地址"""
+  miniprogramPagepath: String
+
+  """小程序模板消息内容，json字符串"""
+  data: String!
+
+  """执行者"""
+  executor: WxAccount
+
+  """执行者"""
+  executorId: String!
+
+  """所属任务，用来统计属于哪次操作"""
+  messageTask: WxMessageTask
+
+  """所属任务，用来统计属于哪次操作"""
+  messageTaskId: String!
+
+  """消息状态，1推送成功，2推送失败，0其他"""
+  status: WxTmPushStatus
+
+  """推送失败原因"""
+  failReason: String
+}
+
+enum WxTmPushStatus {
+  DEFAULT
+  SUCCESS
+  FAILED
+}
